@@ -15,11 +15,27 @@ debug_echo()
     fi
 }
 
+cleanup()
+{
+    echo my pid is $$
+    sn=`basename $0`
+    pids=`pgrep -f $sn`
+    ps $pids
+    for pid in $pids; do
+	if [ $pid != $$ ]; then
+	    kill $pid
+	fi
+    done
+}
+
 #
 # initialize
 #
 setup()
 {
+    cleanup
+    sleep 2;
+
     if fswatch --help > /dev/null; then
         :
     else
